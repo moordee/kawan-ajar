@@ -1,0 +1,72 @@
+# ============================================================
+# MISTRAL NATIVE API INTEGRATION - LARAVEL 12
+# Paste this entire block into the project root terminal.
+# Then replace the API key placeholder in .env and test.
+#
+# UI CONTEXT (per KawanAjar_appSummary.pdf):
+# This AI feature is triggered by the "Tambah Soal" button,
+# located at: Fitur Utama > 2. Mesin Pembuat Ulangan
+# (Uji Kompetensi) > "Tambah Soal"
+# ============================================================
+
+set -e
+
+# 1. Install the package
+composer require matrixbrains/laravel-ai
+
+# 2. Publish config
+php artisan vendor:publish --provider="Matrixbrains\LaravelAi\AiServiceProvider" --tag="config"
+
+# 3. Add env vars
+cat >> .env << 'EOF'
+
+# --- Mistral AI ---
+AI_DRIVER=mistral
+MISTRAL_API_KEY=your_actual_mistral_api_key_here
+MISTRAL_MODEL=mistral-small
+EOF
+
+# 4. Create the service class
+mkdir -p app/Services
+cat > app/Services/AssignmentGenerator.php << 'PHPEOF'
+<?php
+
+namespace App\Services;
+
+use Matrixbrains\LaravelAi\Facades\Ai;
+
+/**
+ * Generates quiz/assignment questions for the KawanAjar app.
+ *
+ * UI trigger point (per KawanAjar_appSummary.pdf):
+ *   Fitur Utama > 2. Mesin Pembuat Ulangan (Uji Kompetensi)
+ *   > "Tambah Soal" button
+ *
+ * The "Tambah Soal" button should call the controller endpoint
+ * that invokes generate() below.
+ */
+class AssignmentGenerator
+{
+    public function generate(string $topic, int $count = 3): string
+    {
+        $prompt = "Generate {$count} distinct school assignment tasks about: {$topic}. Format as a numbered list. Keep them clear and educational.";
+        return Ai::ask($prompt);
+    }
+}
+PHPEOF
+
+# 5. Clear caches
+php artisan config:clear
+composer dump-autoload
+
+echo ""
+echo "============================================"
+echo "SETUP COMPLETE"
+echo "============================================"
+echo "NEXT STEPS:"
+echo "1. Edit .env and replace 'your_actual_mistral_api_key_here' with your real key"
+echo "2. Wire the 'Tambah Soal' button (Fitur Utama > 2. Mesin Pembuat Ulangan > Uji Kompetensi)"
+echo "   to a controller endpoint that calls AssignmentGenerator::generate()"
+echo "3. Run: php artisan tinker"
+echo "4. Inside tinker run: Ai::ask(\"Say 'Mistral integration successful' in exactly those words.\");"
+echo "============================================"

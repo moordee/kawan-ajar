@@ -1,0 +1,9 @@
+1. Create the UI/UX Based on the SB_Admin_Template folder which available is inside the CONTEXT folder.
+2. This is a Laravel 12 project
+3. Use Bootstrap 5 components when creating the KawanAjar app
+4. Colors: Background color = #f2d100; Foreground color = #262521
+5. Use Bootstrap Icons for everything that needs icons, e.g. the CRUD buttons. 
+6. Align button and alert colors with the ones previously stated on point 4
+5. Ask for confirmation whenever you make important decisions.
+6. All buttons and relevant UI components must use Bahasa Indonesia
+7. Refer to KawanAjar_appSummary document which is available inside the CONTEXT folder for required buttons, but keep the SB_Admin_Template styling

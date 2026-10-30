@@ -1,0 +1,28 @@
+ENTITAS DAN ATRIBUT:
+1. GURU: guru_id (PK), nama, email, kata_sandi, peran
+2. KELAS: kelas_id (PK), nama_kelas (misal "VII-A"), tingkat, status_aktif
+3. MATA PELAJARAN: mapel_id (PK), kode_mapel, nama_mapel
+4. MATERI PELAJARAN: materi_id (PK), judul_materi, isi_materi, lampiran_dokumen, tanggal_dibuat
+5. SOAL (dari Bank Soal): soal_id (PK), teks_soal, jenis_soal (Pilihan Ganda / Esai), tingkat_kesulitan (Mudah / Sedang / Sulit), bab_materi, sumber_soal (Dibuat Manual / Dihasilkan AI), prompt_yang_digunakan (isi hanya jika sumber_soal = AI)
+6. PILIHAN JAWABAN: pilihan_id (PK), huruf_opsi (A-E), teks_opsi, is_kunci_jawaban
+7. ULANGAN (Uji Kompetensi): ulangan_id (PK), judul_ulangan, jenis_soal_diizinkan, acak_soal, acak_opsi, tampilkan_hasil, tanggal_dibuat
+8. UJIAN BESAR (UTS/SAS): ujian_id (PK), judul_ujian, semester, waktu_ujian, jumlah_soal, acak_soal, acak_pilihan, bobot_nilai_per_bab, bobot_nilai_per_tingkat_kesulitan, total_bobot
+9. SISWA: siswa_id (PK), nama_siswa, nis
+10. SESI PEMBUATAN SOAL AI: sesi_id (PK), prompt_instruksi, jumlah_soal_diminta, jenis_soal_diminta, tingkat_kesulitan_diminta, tanggal_sesi
+
+RELASI (belah ketupat) DAN KARDINALITAS:
+- MENGAJAR: relasi tiga-arah (ternary) antara GURU "1", KELAS "N", dan MATA PELAJARAN "M" — mewakili guru mana yang mengajar mapel mana di kelas mana
+- MEMILIKI: KELAS "1" ── MEMILIKI ── "N" SISWA
+- MEMBUAT: GURU "1" ── MEMBUAT ── "N" MATERI PELAJARAN
+- UNTUK KELAS: KELAS "1" ── UNTUK KELAS ── "N" MATERI PELAJARAN
+- UNTUK MAPEL: MATA PELAJARAN "1" ── UNTUK MAPEL ── "N" MATERI PELAJARAN
+- MEMILIKI SOAL: MATA PELAJARAN "1" ── MEMILIKI SOAL ── "N" SOAL
+- MEMILIKI OPSI: SOAL "1" ── MEMILIKI OPSI ── "N" PILIHAN JAWABAN
+- MENYUSUN: GURU "1" ── MENYUSUN ── "N" ULANGAN; tambahkan relasi UNTUK KELAS (KELAS "1" ── "N" ULANGAN) dan PADA MAPEL (MATA PELAJARAN "1" ── "N" ULANGAN)
+- MENYUSUN: GURU "1" ── MENYUSUN ── "N" UJIAN BESAR; tambahkan relasi PADA MAPEL (MATA PELAJARAN "1" ── "N" UJIAN BESAR)
+- MEMUAT: ULANGAN "M" ── MEMUAT ── "N" SOAL — relasi banyak-ke-banyak; atribut relasi (nomor_urut, bobot_nilai) digantung pada belah ketupat MEMUAT
+- MEMUAT: UJIAN BESAR "M" ── MEMUAT ── "N" SOAL — sama, dengan atribut nomor_urut dan bobot_nilai pada belah ketupat
+- MENGERJAKAN: SISWA "M" ── MENGERJAKAN ── "N" ULANGAN dan SISWA "M" ── MENGERJAKAN ── "N" UJIAN BESAR — atribut relasi (skor, tanggal_dikerjakan) digantung pada belah ketupat
+- MEMULAI SESI: GURU "1" ── MEMULAI SESI ── "N" SESI PEMBUATAN SOAL AI
+- BERBASIS MATERI: MATERI PELAJARAN "1" ── BERBASIS MATERI ── "N" SESI PEMBUATAN SOAL AI
+- MENGHASILKAN: SESI PEMBUATAN SOAL AI "1" ── MENGHASILKAN ── "N" SOAL (hanya untuk soal dengan sumber_soal = "Dihasilkan AI")
