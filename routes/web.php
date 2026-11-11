@@ -9,7 +9,9 @@ use App\Http\Controllers\UjianBesarController;
 use App\Http\Controllers\UlanganController;
 use Illuminate\Support\Facades\Route;
 
+// routing untuk mengakses halaman utama
 Route::get('/', [AuthController::class, 'home'])->name('home');
+// routing untuk mengakses laman login
 Route::get('/masuk', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/masuk', [AuthController::class, 'login'])->name('login.store');
 Route::get('/daftar', [AuthController::class, 'showRegister'])->name('register');
